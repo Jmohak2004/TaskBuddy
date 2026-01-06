@@ -14,9 +14,11 @@ const app = express();
 const server = http.createServer(app);
 
 // Production Configuration
-const ORIGIN = process.env.NODE_ENV === 'production'
-    ? "https://task-buddy-4xix.vercel.app/"
-    : "http://localhost:5173";
+const ORIGIN = [
+    "https://task-buddy-4xix.vercel.app",
+    "https://task-buddy-4xix.vercel.app/",
+    "http://localhost:5173"
+];
 
 // Socket.IO Setup
 const io = new Server(server, {

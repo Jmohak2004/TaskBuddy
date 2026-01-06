@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { motion } from 'framer-motion'
 import { Mail, Lock, ArrowRight, Loader } from 'lucide-react'
 import { Link, useNavigate } from 'react-router-dom'
+import API_BASE_URL from '../apiConfig'
 
 const LoginPage = ({ onLogin }) => {
     const [formData, setFormData] = useState({ email: '', password: '' })
@@ -14,12 +15,11 @@ const LoginPage = ({ onLogin }) => {
         setLoading(true)
         setError('')
         try {
-            console.log("Attempting login for:", formData.email);
-            const res = await fetch('http://localhost:3000/api/auth/login', {
+            const res = await fetch(`${API_BASE_URL}/api/auth/login`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(formData),
-                credentials: 'include' // This is essential for setting the cookie
+                credentials: 'include'
             })
             const data = await res.json()
             if (res.ok && data.success) {
@@ -29,8 +29,7 @@ const LoginPage = ({ onLogin }) => {
                 setError(data.message || data || 'Login failed')
             }
         } catch (err) {
-            console.error("Login Fetch Error:", err);
-            setError('Server connection failed. Is the backend running?')
+            setError('Server connection failed.')
         } finally {
             setLoading(false)
         }
@@ -53,15 +52,7 @@ const LoginPage = ({ onLogin }) => {
                     <p className="text-gray-400 mt-2">Enter your classroom dashboard</p>
                 </div>
 
-                {error && (
-                    <motion.div
-                        initial={{ opacity: 0, y: -10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        className="mb-6 p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm italic"
-                    >
-                        {error}
-                    </motion.div>
-                )}
+                {error && <div className="mb-6 p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm italic">{error}</div>}
 
                 <form onSubmit={handleSubmit} className="space-y-5">
                     <div>
@@ -71,7 +62,7 @@ const LoginPage = ({ onLogin }) => {
                             <input
                                 type="email"
                                 required
-                                className="w-full bg-black/40 border border-white/10 rounded-xl px-12 py-3.5 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500/20 transition-all text-white"
+                                className="w-full bg-black/40 border border-white/10 rounded-xl px-12 py-3.5 focus:outline-none focus:border-purple-500 text-white"
                                 placeholder="name@example.com"
                                 value={formData.email}
                                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
@@ -85,7 +76,7 @@ const LoginPage = ({ onLogin }) => {
                             <input
                                 type="password"
                                 required
-                                className="w-full bg-black/40 border border-white/10 rounded-xl px-12 py-3.5 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500/20 transition-all text-white"
+                                className="w-full bg-black/40 border border-white/10 rounded-xl px-12 py-3.5 focus:outline-none focus:border-purple-500 text-white"
                                 placeholder="••••••••"
                                 value={formData.password}
                                 onChange={(e) => setFormData({ ...formData, password: e.target.value })}

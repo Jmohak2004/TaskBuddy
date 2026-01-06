@@ -13,10 +13,15 @@ const roomRoutes = require("./routes/roomRouter");
 const app = express();
 const server = http.createServer(app);
 
+// Production Configuration
+const ORIGIN = process.env.NODE_ENV === 'production'
+    ? "https://task-buddy-six.vercel.app"
+    : "http://localhost:5173";
+
 // Socket.IO Setup
 const io = new Server(server, {
     cors: {
-        origin: "http://localhost:5173",
+        origin: ORIGIN,
         credentials: true
     }
 });
@@ -26,7 +31,7 @@ db.connectDB();
 
 // Global Middlewares
 app.use(cors({
-    origin: "http://localhost:5173",
+    origin: ORIGIN,
     credentials: true
 }));
 app.use(express.json());

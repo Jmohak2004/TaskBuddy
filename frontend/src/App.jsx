@@ -6,6 +6,8 @@ import LoginPage from './pages/LoginPage'
 import SignupPage from './pages/SignupPage'
 import RoomSelectionPage from './pages/RoomSelectionPage'
 
+import API_BASE_URL from './apiConfig'
+
 const App = () => {
   const [user, setUser] = useState(null)
   const [loading, setLoading] = useState(true)
@@ -14,7 +16,7 @@ const App = () => {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const res = await fetch('http://localhost:3000/api/auth/profile', { credentials: 'include' })
+        const res = await fetch(`${API_BASE_URL}/api/auth/profile`, { credentials: 'include' })
         const data = await res.json()
         if (data.success) {
           setUser(data.user)

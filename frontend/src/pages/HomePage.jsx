@@ -7,6 +7,7 @@ import { Plus, Search, ArrowLeft, Lock, Globe } from 'lucide-react'
 import TaskCard from '../components/board/TaskCard'
 import NewTaskModal from '../components/NewTaskModal'
 import { io } from 'socket.io-client'
+import API_BASE_URL from '../apiConfig'
 
 const COLUMNS = [
     { id: 'Backlog', title: 'Backlog', color: 'bg-gray-500/20' },
@@ -46,15 +47,11 @@ const HomePage = () => {
 
     useEffect(() => {
         fetchTasks()
-        const socket = io('http://localhost:3000')
+        const socket = io(API_BASE_URL)
 
         socket.on('taskCreated', (newTask) => {
-            console.log("Received socket taskCreated:", newTask);
-            if (isPersonal && !newTask.room) {
-                setTasks(prev => [newTask, ...prev])
-            } else if (newTask.room === roomId) {
-                setTasks(prev => [newTask, ...prev])
-            }
+            if (isPersonal && !newTask.room) setTasks(prev => [newTask, ...prev])
+            else if (newTask.room === roomId) setTasks(prev => [newTask, ...prev])
         })
 
         socket.on('taskUpdated', (updatedTask) => {
@@ -72,7 +69,7 @@ const HomePage = () => {
 
     const fetchTasks = async () => {
         try {
-            const res = await fetch(`http://localhost:3000/api/tasks?roomId=${roomId}`, { credentials: 'include' })
+            const res = await fetch(`${API_BASE_URL}/api/tasks?roomId=${roomId}`, { credentials: 'include' })
             const data = await res.json()
             if (data.success) setTasks(data.tasks)
         } catch (err) { console.error(err) }
@@ -80,23 +77,14 @@ const HomePage = () => {
 
     const handleCreateTask = async (taskData) => {
         try {
-            const res = await fetch('http://localhost:3000/api/tasks', {
+            await fetch(`${API_BASE_URL}/api/tasks`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ ...taskData, roomId }),
                 credentials: 'include'
             })
-            const data = await res.json()
-            if (res.ok) {
-                setIsModalOpen(false)
-            } else {
-                console.error("Server Error creating task:", data.message)
-                alert("Error: " + data.message)
-            }
-        } catch (err) {
-            console.error("Fetch Error creating task:", err)
-            alert("Connection Error")
-        }
+            setIsModalOpen(false)
+        } catch (err) { console.error(err) }
     }
 
     const handleDragEnd = async (event) => {
@@ -113,7 +101,7 @@ const HomePage = () => {
 
         if (activeTask.status !== newStatus) {
             setTasks(prev => prev.map(t => t._id === active.id ? { ...t, status: newStatus } : t))
-            await fetch(`http://localhost:3000/api/tasks/${active.id}`, {
+            await fetch(`${API_BASE_URL}/api/tasks/${active.id}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ status: newStatus }),

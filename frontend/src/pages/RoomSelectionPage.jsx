@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { Plus, Users, ArrowRight, BookOpen, Loader, LogOut, Lock } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
+import API_BASE_URL from '../apiConfig'
 
 const RoomSelectionPage = ({ user }) => {
     const [rooms, setRooms] = useState([])
@@ -18,7 +19,7 @@ const RoomSelectionPage = ({ user }) => {
 
     const fetchRooms = async () => {
         try {
-            const res = await fetch('http://localhost:3000/api/rooms/my-rooms', { credentials: 'include' })
+            const res = await fetch(`${API_BASE_URL}/api/rooms/my-rooms`, { credentials: 'include' })
             const data = await res.json()
             if (data.success) {
                 setRooms(data.rooms)
@@ -32,7 +33,7 @@ const RoomSelectionPage = ({ user }) => {
         e.preventDefault()
         setLoading(true)
         try {
-            const res = await fetch('http://localhost:3000/api/rooms/create', {
+            const res = await fetch(`${API_BASE_URL}/api/rooms/create`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ name: roomName }),
@@ -52,7 +53,7 @@ const RoomSelectionPage = ({ user }) => {
         e.preventDefault()
         setLoading(true)
         try {
-            const res = await fetch('http://localhost:3000/api/rooms/join', {
+            const res = await fetch(`${API_BASE_URL}/api/rooms/join`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ code: joinCode }),
@@ -94,9 +95,7 @@ const RoomSelectionPage = ({ user }) => {
                 </button>
             </header>
 
-            {/* Quick Stats */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-                {/* PERSONAL SPACE CARD */}
                 <motion.div
                     whileHover={{ scale: 1.02 }}
                     onClick={() => navigate('/room/personal')}
@@ -120,75 +119,43 @@ const RoomSelectionPage = ({ user }) => {
             <div className="flex justify-between items-center mb-6 pt-6 border-t border-white/5">
                 <h2 className="text-xl font-bold">Your Classroom Groups</h2>
                 <div className="flex gap-4">
-                    <button
-                        onClick={() => setIsJoinModalOpen(true)}
-                        className="flex items-center gap-2 px-4 py-2 border border-white/10 rounded-lg hover:bg-white/5 transition-colors text-sm"
-                    >
+                    <button onClick={() => setIsJoinModalOpen(true)} className="flex items-center gap-2 px-4 py-2 border border-white/10 rounded-lg hover:bg-white/5 transition-colors text-sm">
                         <Plus className="w-4 h-4" /> Join Class
                     </button>
-                    <button
-                        onClick={() => setIsCreateModalOpen(true)}
-                        className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-600 to-cyan-600 rounded-lg font-bold hover:shadow-[0_0_20px_rgba(139,92,246,0.3)] transition-all text-sm"
-                    >
+                    <button onClick={() => setIsCreateModalOpen(true)} className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-600 to-cyan-600 rounded-lg font-bold hover:shadow-[0_0_20px_rgba(139,92,246,0.3)] transition-all text-sm">
                         <Plus className="w-4 h-4" /> Create Class
                     </button>
                 </div>
             </div>
 
-            {/* Room Grid */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {rooms.map(room => (
-                    <motion.div
-                        key={room._id}
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        whileHover={{ y: -5 }}
-                        onClick={() => navigate(`/room/${room._id}`)}
-                        className="p-6 bg-[#18181b] border border-white/10 rounded-2xl cursor-pointer hover:border-purple-500/50 transition-all group relative"
-                    >
+                    <motion.div key={room._id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} whileHover={{ y: -5 }} onClick={() => navigate(`/room/${room._id}`)} className="p-6 bg-[#18181b] border border-white/10 rounded-2xl cursor-pointer hover:border-purple-500/50 transition-all group relative">
                         <div className="flex justify-between items-start mb-6">
-                            <div className="w-12 h-12 bg-white/5 rounded-xl flex items-center justify-center">
-                                <BookOpen className="w-6 h-6 text-gray-400 group-hover:text-purple-400 transition-colors" />
-                            </div>
-                            <span className="text-xs bg-white/5 px-3 py-1 rounded-full text-gray-400 font-mono italic">
-                                {room.code}
-                            </span>
+                            <div className="w-12 h-12 bg-white/5 rounded-xl flex items-center justify-center"><BookOpen className="w-6 h-6 text-gray-400 group-hover:text-purple-400 transition-colors" /></div>
+                            <span className="text-xs bg-white/5 px-3 py-1 rounded-full text-gray-400 font-mono italic">{room.code}</span>
                         </div>
                         <h2 className="text-xl font-bold mb-1">{room.name}</h2>
                         <div className="flex items-center justify-between mt-4">
-                            <div className="flex items-center text-gray-500 text-xs gap-1">
-                                <Users className="w-3 h-3" />
-                                {room.members.length} Members
-                            </div>
+                            <div className="flex items-center text-gray-500 text-xs gap-1"><Users className="w-3 h-3" />{room.members.length} Members</div>
                             <ArrowRight className="w-4 h-4 text-gray-700 group-hover:text-white transition-all group-hover:translate-x-1" />
                         </div>
                     </motion.div>
                 ))}
             </div>
 
-            {/* Modals */}
             {(isCreateModalOpen || isJoinModalOpen) && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
                     <div className="bg-[#18181b] p-8 rounded-2xl border border-white/10 w-full max-w-md">
                         <h2 className="text-2xl font-bold mb-6">{isCreateModalOpen ? 'Create Class' : 'Join Class'}</h2>
                         <form onSubmit={isCreateModalOpen ? handleCreateRoom : handleJoinRoom}>
                             <div className="mb-6">
-                                <label className="block text-sm text-gray-400 mb-2">
-                                    {isCreateModalOpen ? 'Class Name' : 'Class Code'}
-                                </label>
-                                <input
-                                    className="w-full bg-black/20 border border-white/10 rounded-xl px-4 py-3 focus:border-purple-500 outline-none"
-                                    placeholder={isCreateModalOpen ? 'e.g. History Grade 10' : 'e.g. X7K9P2'}
-                                    value={isCreateModalOpen ? roomName : joinCode}
-                                    onChange={e => isCreateModalOpen ? setRoomName(e.target.value) : setJoinCode(e.target.value)}
-                                    autoFocus
-                                />
+                                <label className="block text-sm text-gray-400 mb-2">{isCreateModalOpen ? 'Class Name' : 'Class Code'}</label>
+                                <input className="w-full bg-black/20 border border-white/10 rounded-xl px-4 py-3 focus:border-purple-500 outline-none text-white" placeholder={isCreateModalOpen ? 'e.g. History' : 'e.g. X7K9P2'} value={isCreateModalOpen ? roomName : joinCode} onChange={e => isCreateModalOpen ? setRoomName(e.target.value) : setJoinCode(e.target.value)} autoFocus />
                             </div>
                             <div className="flex justify-end gap-3">
                                 <button type="button" onClick={() => { setIsCreateModalOpen(false); setIsJoinModalOpen(false) }} className="px-4 py-2 text-gray-400">Cancel</button>
-                                <button type="submit" disabled={loading} className="px-6 py-2 bg-purple-600 rounded-xl font-bold">
-                                    {isCreateModalOpen ? 'Create' : 'Join'}
-                                </button>
+                                <button type="submit" disabled={loading} className="px-6 py-2 bg-purple-600 rounded-xl font-bold">{isCreateModalOpen ? 'Create' : 'Join'}</button>
                             </div>
                         </form>
                     </div>

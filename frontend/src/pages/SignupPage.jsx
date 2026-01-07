@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { motion } from 'framer-motion'
-import { ArrowRight, Mail, Lock, User, Loader } from 'lucide-react'
 import { Link, useNavigate } from 'react-router-dom'
+import { ArrowLeft, ArrowRight, Mail, Lock, User, Loader } from 'lucide-react'
 import API_BASE_URL from '../apiConfig'
 
 const SignupPage = ({ onSignup }) => {
@@ -45,9 +45,12 @@ const SignupPage = ({ onSignup }) => {
             <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="w-full max-w-md bg-white/5 backdrop-blur-xl border border-white/10 p-8 rounded-3xl shadow-2xl"
+                className="w-full max-w-md bg-white/5 backdrop-blur-xl border border-white/10 p-6 md:p-8 rounded-3xl shadow-2xl relative"
             >
-                <h2 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-cyan-400 text-center mb-8">Join NexGen</h2>
+                <Link to="/" className="absolute top-4 left-4 md:top-6 md:left-6 p-2 hover:bg-white/5 rounded-lg transition-colors group">
+                    <ArrowLeft className="w-5 h-5 text-gray-500 group-hover:text-white transition-colors" />
+                </Link>
+                <h2 className="text-2xl md:text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-cyan-400 text-center mb-6 md:mb-8 mt-6 md:mt-0">Join NexGen</h2>
 
                 {error && <div className="mb-4 p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-sm">{error}</div>}
 

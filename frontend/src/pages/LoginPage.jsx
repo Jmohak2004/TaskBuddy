@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { motion } from 'framer-motion'
-import { Mail, Lock, ArrowRight, Loader } from 'lucide-react'
 import { Link, useNavigate } from 'react-router-dom'
+import { ArrowLeft, Mail, Lock, ArrowRight, Loader } from 'lucide-react'
 import API_BASE_URL from '../apiConfig'
 
 const LoginPage = ({ onLogin }) => {
@@ -45,10 +45,13 @@ const LoginPage = ({ onLogin }) => {
             <motion.div
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="w-full max-w-md bg-white/5 backdrop-blur-xl border border-white/10 p-8 rounded-3xl shadow-2xl"
+                className="w-full max-w-md bg-white/5 backdrop-blur-xl border border-white/10 p-6 md:p-8 rounded-3xl shadow-2xl relative"
             >
-                <div className="text-center mb-10">
-                    <h2 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-cyan-400">Welcome Back</h2>
+                <Link to="/" className="absolute top-4 left-4 md:top-6 md:left-6 p-2 hover:bg-white/5 rounded-lg transition-colors group">
+                    <ArrowLeft className="w-5 h-5 text-gray-500 group-hover:text-white transition-colors" />
+                </Link>
+                <div className="text-center mb-8 md:mb-10 mt-6 md:mt-0">
+                    <h2 className="text-2xl md:text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-cyan-400">Welcome Back</h2>
                     <p className="text-gray-400 mt-2">Enter your classroom dashboard</p>
                 </div>
 

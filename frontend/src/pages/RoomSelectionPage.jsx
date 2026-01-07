@@ -4,7 +4,7 @@ import { Plus, Users, ArrowRight, BookOpen, Loader, LogOut, Lock } from 'lucide-
 import { useNavigate } from 'react-router-dom'
 import API_BASE_URL from '../apiConfig'
 
-const RoomSelectionPage = ({ user }) => {
+const RoomSelectionPage = ({ user, onLogout }) => {
     const [rooms, setRooms] = useState([])
     const [isJoinModalOpen, setIsJoinModalOpen] = useState(false)
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
@@ -74,63 +74,61 @@ const RoomSelectionPage = ({ user }) => {
     }
 
     return (
-        <div className="min-h-screen bg-[#030305] text-white p-8">
-            <header className="flex justify-between items-center mb-12">
+        <div className="min-h-screen bg-[#030305] text-white p-4 md:p-8">
+            <header className="flex justify-between items-center mb-10 md:mb-12">
                 <div className="flex items-center gap-4">
                     <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-purple-500 to-cyan-500 flex items-center justify-center font-bold text-lg">
                         {user?.fullname?.[0] || 'U'}
                     </div>
                     <div>
-                        <h1 className="text-2xl font-bold">Welcome, {user?.fullname?.split(' ')[0]}!</h1>
-                        <p className="text-gray-400 text-sm">Student Dashboard</p>
+                        <h1 className="text-xl md:text-2xl font-bold">Welcome, {user?.fullname?.split(' ')[0]}!</h1>
+                        <p className="text-gray-400 text-xs md:text-sm">Student Dashboard</p>
                     </div>
                 </div>
                 <button
-                    onClick={() => {
-                        window.location.href = '/' // Simple logout
-                    }}
+                    onClick={onLogout}
                     className="p-2 hover:bg-white/10 rounded-lg transition-colors text-gray-400 hover:text-white"
                 >
                     <LogOut className="w-5 h-5" />
                 </button>
             </header>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-12">
                 <motion.div
                     whileHover={{ scale: 1.02 }}
                     onClick={() => navigate('/room/personal')}
-                    className="p-6 rounded-2xl bg-gradient-to-br from-indigo-900/40 to-indigo-600/20 border border-indigo-500/30 cursor-pointer group shadow-xl shadow-indigo-500/5"
+                    className="p-5 md:p-6 rounded-2xl bg-gradient-to-br from-indigo-900/40 to-indigo-600/20 border border-indigo-500/30 cursor-pointer group shadow-xl shadow-indigo-500/5"
                 >
                     <div className="flex justify-between items-start mb-4">
-                        <div className="w-12 h-12 bg-white/5 rounded-xl flex items-center justify-center group-hover:bg-indigo-500/20 transition-colors">
-                            <Lock className="w-6 h-6 text-indigo-400" />
+                        <div className="w-10 h-10 md:w-12 md:h-12 bg-white/5 rounded-xl flex items-center justify-center group-hover:bg-indigo-500/20 transition-colors">
+                            <Lock className="w-5 h-5 md:w-6 md:h-6 text-indigo-400" />
                         </div>
                     </div>
-                    <h3 className="text-xl font-bold mb-1">My Private Space</h3>
-                    <p className="text-indigo-300 text-xs font-medium uppercase tracking-widest">Personal Board</p>
+                    <h3 className="text-lg md:text-xl font-bold mb-1">My Private Space</h3>
+                    <p className="text-indigo-300 text-[10px] font-medium uppercase tracking-widest">Personal Board</p>
                 </motion.div>
 
-                <div className="p-6 rounded-2xl bg-white/5 border border-white/10 flex flex-col justify-center">
-                    <h3 className="text-gray-400 mb-1 text-sm font-medium">Joined Classes</h3>
-                    <p className="text-3xl font-bold text-white">{rooms.length}</p>
+                <div className="p-5 md:p-6 rounded-2xl bg-white/5 border border-white/10 flex flex-col justify-center">
+                    <h3 className="text-gray-400 mb-1 text-xs md:text-sm font-medium">Joined Classes</h3>
+                    <p className="text-2xl md:text-3xl font-bold text-white">{rooms.length}</p>
                 </div>
             </div>
 
-            <div className="flex justify-between items-center mb-6 pt-6 border-t border-white/5">
+            <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4 mb-6 pt-6 border-t border-white/5">
                 <h2 className="text-xl font-bold">Your Classroom Groups</h2>
-                <div className="flex gap-4">
-                    <button onClick={() => setIsJoinModalOpen(true)} className="flex items-center gap-2 px-4 py-2 border border-white/10 rounded-lg hover:bg-white/5 transition-colors text-sm">
+                <div className="flex gap-2 md:gap-4">
+                    <button onClick={() => setIsJoinModalOpen(true)} className="flex-1 sm:flex-none justify-center flex items-center gap-2 px-4 py-2 border border-white/10 rounded-lg hover:bg-white/5 transition-colors text-xs md:text-sm">
                         <Plus className="w-4 h-4" /> Join Class
                     </button>
-                    <button onClick={() => setIsCreateModalOpen(true)} className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-600 to-cyan-600 rounded-lg font-bold hover:shadow-[0_0_20px_rgba(139,92,246,0.3)] transition-all text-sm">
+                    <button onClick={() => setIsCreateModalOpen(true)} className="flex-1 sm:flex-none justify-center flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-600 to-cyan-600 rounded-lg font-bold hover:shadow-[0_0_20px_rgba(139,92,246,0.3)] transition-all text-xs md:text-sm">
                         <Plus className="w-4 h-4" /> Create Class
                     </button>
                 </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
                 {rooms.map(room => (
-                    <motion.div key={room._id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} whileHover={{ y: -5 }} onClick={() => navigate(`/room/${room._id}`)} className="p-6 bg-[#18181b] border border-white/10 rounded-2xl cursor-pointer hover:border-purple-500/50 transition-all group relative">
+                    <motion.div key={room._id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} whileHover={{ y: -5 }} onClick={() => navigate(`/room/${room._id}`)} className="p-5 md:p-6 bg-[#18181b] border border-white/10 rounded-2xl cursor-pointer hover:border-purple-500/50 transition-all group relative">
                         <div className="flex justify-between items-start mb-6">
                             <div className="w-12 h-12 bg-white/5 rounded-xl flex items-center justify-center"><BookOpen className="w-6 h-6 text-gray-400 group-hover:text-purple-400 transition-colors" /></div>
                             <span className="text-xs bg-white/5 px-3 py-1 rounded-full text-gray-400 font-mono italic">{room.code}</span>

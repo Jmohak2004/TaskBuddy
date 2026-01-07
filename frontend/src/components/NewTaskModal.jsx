@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { X, Calendar, Tag, Loader } from 'lucide-react'
 
-const NewTaskModal = ({ isOpen, onClose, onSave }) => {
+const NewTaskModal = ({ isOpen, onClose, onSave, onTyping }) => {
     const [formData, setFormData] = useState({
         title: '',
         description: '',
@@ -13,6 +13,9 @@ const NewTaskModal = ({ isOpen, onClose, onSave }) => {
     })
     const [loading, setLoading] = useState(false)
 
+    const handleFocus = () => onTyping?.(true)
+    const handleBlur = () => onTyping?.(false)
+
     const handleSubmit = async (e) => {
         e.preventDefault()
         setLoading(true)
@@ -21,16 +24,7 @@ const NewTaskModal = ({ isOpen, onClose, onSave }) => {
                 ...formData,
                 tags: formData.tags.split(',').map(t => t.trim()).filter(Boolean)
             }
-            const res = await fetch('http://localhost:3000/api/tasks', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                    // Note: credentials implemented via browser cookies automatically if origin items match (or handled in caller)
-                    // But fetch needs credentials: 'include' usually.
-                },
-                // We will handle the fetch in parent or here. Let's handle here but need credentials.
-            })
-            // Actually best to pass data up to onSave and let parent handle fetch to update list.
+            // Pass data up to onSave and let parent handle fetch to update list.
             await onSave(taskData)
             setFormData({ title: '', description: '', priority: 'Medium', status: 'Todo', dueDate: '', tags: '' })
         } catch (err) {
@@ -55,16 +49,16 @@ const NewTaskModal = ({ isOpen, onClose, onSave }) => {
                         initial={{ opacity: 0, scale: 0.95, y: 20 }}
                         animate={{ opacity: 1, scale: 1, y: 0 }}
                         exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                        className="w-full max-w-lg bg-[#18181b] border border-white/10 rounded-2xl shadow-2xl relative z-10 overflow-hidden"
+                        className="w-full max-w-lg bg-[#18181b] border border-white/10 rounded-2xl shadow-2xl relative z-10 overflow-hidden max-h-[90vh] flex flex-col"
                     >
-                        <div className="p-6 border-b border-white/10 flex justify-between items-center">
+                        <div className="p-4 md:p-6 border-b border-white/10 flex justify-between items-center">
                             <h2 className="text-xl font-bold text-white">New Task</h2>
                             <button onClick={onClose} className="p-1 rounded-lg hover:bg-white/10 transition-colors">
                                 <X className="w-5 h-5 text-gray-400" />
                             </button>
                         </div>
 
-                        <form onSubmit={handleSubmit} className="p-6 space-y-4">
+                        <form onSubmit={handleSubmit} className="p-4 md:p-6 space-y-4 overflow-y-auto custom-scrollbar">
                             <div>
                                 <label className="block text-sm text-gray-400 mb-1">Title</label>
                                 <input
@@ -72,6 +66,8 @@ const NewTaskModal = ({ isOpen, onClose, onSave }) => {
                                     className="w-full bg-black/20 border border-white/10 rounded-lg px-4 py-2 focus:border-purple-500 outline-none text-white placeholder-gray-600"
                                     placeholder="What needs to be done?"
                                     value={formData.title}
+                                    onBlur={handleBlur}
+                                    onFocus={handleFocus}
                                     onChange={e => setFormData({ ...formData, title: e.target.value })}
                                 />
                             </div>

@@ -30,6 +30,17 @@ const App = () => {
     checkAuth()
   }, [])
 
+  const handleLogout = async () => {
+    try {
+      await fetch(`${API_BASE_URL}/api/auth/logout`, { credentials: 'include' })
+      setUser(null)
+    } catch (err) {
+      console.error("Logout failed", err)
+      // Fallback: clear state anyway
+      setUser(null)
+    }
+  }
+
   if (loading) return <div className="min-h-screen bg-[#030305] flex items-center justify-center text-white">Loading...</div>
 
   return (
@@ -37,8 +48,8 @@ const App = () => {
       <div className="min-h-screen bg-[#030305] text-white overflow-hidden selection:bg-purple-500/30">
         <Routes>
           <Route path="/" element={user ? <Navigate to="/rooms" /> : <WelcomePage />} />
-          <Route path="/rooms" element={user ? <RoomSelectionPage user={user} /> : <Navigate to="/" />} />
-          <Route path="/room/:roomId" element={user ? <HomePage /> : <Navigate to="/" />} />
+          <Route path="/rooms" element={user ? <RoomSelectionPage user={user} onLogout={handleLogout} /> : <Navigate to="/" />} />
+          <Route path="/room/:roomId" element={user ? <HomePage user={user} onLogout={handleLogout} /> : <Navigate to="/" />} />
           <Route path="/login" element={!user ? <LoginPage onLogin={setUser} /> : <Navigate to="/rooms" />} />
           <Route path="/signup" element={!user ? <SignupPage onSignup={setUser} /> : <Navigate to="/rooms" />} />
         </Routes>
